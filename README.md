@@ -1,4 +1,4 @@
-<html lang="en"> 
+<html lang="en">  
 <head>
   <meta charset="UTF-8">
   <title>Town Nutella</title>
@@ -10,23 +10,23 @@
       background: white;
       color: #333;
     }
+    /* Header always visible */
     header {
       background: #b30000;
       color: white;
-      padding: 10px;
+      padding: 5px 0;
       text-align: center;
-      border: 3px solid #b30000; /* added border */
-      border-radius: 10px; /* optional rounded corners */
+      border-bottom: 4px solid black;
+      border-radius: 0 0 15px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     header img {
-      width: 250px; height: 250px; /* bigger logo */
+      width: 120px; height: 120px;
       border-radius: 0%;
       display: block;
-      margin: 20px auto; /* centered */
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5em;
+      margin: 0 auto;
     }
     .menu {
       display: grid;
@@ -35,26 +35,35 @@
       padding: 10px;
     }
     .item {
-      background: black;
+      background: url("b.jpg");  
+      background-size: cover;
+      background-position: center;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s;
-      color: white;
+      color: red;
+      text-shadow: 1px 1px 3px white;
     }
     .item:hover { transform: scale(1.05); }
     .item img {
       width: 100%; height: 100px; object-fit: cover;
       border-radius: 8px;
     }
+
+    /* Cart footer - hidden at start */
     .cart {
       background: white;
       padding: 15px;
       border-top: 2px solid #ddd;
-      position: sticky;
+      position: fixed;
       bottom: 0;
+      left: 0;
+      right: 0;
+      display: none; /* hidden until item added */
+      z-index: 1000;
     }
     .cart h2 { margin-top: 0; font-size: 1.2em; }
     .order-list { max-height: 150px; overflow-y: auto; font-size: 0.9em; }
@@ -85,9 +94,7 @@
 <body>
 
 <header>
-  <!-- 👇 لێرە logo خۆت دابنێ -->
   <img src="n.jpg" alt="Town Nutella Logo">
-  <h1>T</h1>
 </header>
 
 <div class="menu">
@@ -110,7 +117,7 @@
   </div>
 </div>
 
-<div class="cart">
+<div class="cart" id="cartBox">
   <h2>🛒 داواکارییەکەت</h2>
   <div class="order-list" id="orderList"></div>
   <p><b>کۆی گشتی:</b> <span id="total">٠</span> دینار</p>
@@ -127,7 +134,6 @@
 </footer>
 
 <script>
-  // 👇 لێرە توکن و chat_id بنووسە
   const BOT_TOKEN = "YOUR_BOT_TOKEN";
   const CHAT_ID   = "YOUR_CHAT_ID";
 
@@ -136,11 +142,15 @@
   function addToCart(name, price){
     cart.push({name, price});
     renderCart();
+    document.getElementById("cartBox").style.display = "block"; // show footer cart
   }
 
   function undoLast(){
     cart.pop();
     renderCart();
+    if(cart.length === 0){
+      document.getElementById("cartBox").style.display = "none"; // hide when empty
+    }
   }
 
   function renderCart(){
@@ -177,6 +187,7 @@
         cart=[]; renderCart();
         document.getElementById("address").value="";
         document.getElementById("phone").value="";
+        document.getElementById("cartBox").style.display="none";
       } else {
         alert("❌ هەڵەی ناردن");
       }
